@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>طلب البسبوسة</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #fff8f0;
+      direction: rtl;
+      text-align: center;
+      padding: 20px;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    select, input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #d2691e;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #a0522d;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      background-color: #f0e6d6;
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 8px;
+    }
+    #productImage {
+      width: 100%;
+      /* max-height: 200px; */
+      object-fit: cover;
+      border-radius: 10px;
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>طلب بسبوسة أو قهوة</h2>
+
+    <label for="type">اختر النوع:</label>
+    <select id="type" onchange="updateUI()">
+      <option value="بسبوسة (كبير)">بسبوسة (كبير)</option>
+      <option value="بسبوسة (صغير)">بسبوسة (صغير)</option>
+      <option value="قهوة V60">قهوة V60</option>
+      <option value="قهوة عربية">قهوة عربية</option>
+    </select>
+
+    <img id="productImage" src="" alt="صورة المنتج">
+
+    <label for="quantity">اختر العدد:</label>
+    <input type="number" id="quantity" min="1" value="1">
+
+    <button onclick="addProduct()">إضافة المنتج</button>
+
+    <ul id="orderList"></ul>
+
+    <button onclick="sendOrder()">اطلب الآن عبر واتساب</button>
+  </div>
+
+  <script>
+    let orders = [];
+
+    function updateUI() {
+      const type = document.getElementById('type').value;
+      const image = document.getElementById('productImage');
+
+      if (type === 'بسبوسة (كبير)') {
+        image.src = 'img/بسبوسة (كبير).png';
+        image.style.display = 'block';
+      } else if (type === 'بسبوسة (صغير)') {
+        image.src = 'img/بسبوسة (عادي).png';
+        image.style.display = 'block';
+      } else if (type === 'قهوة V60') {
+        image.src = 'img/قهوة البسبوسة V60.png';
+        image.style.display = 'block';
+      } else if (type === 'قهوة عربية') {
+        image.src = 'img/قهوة البسبوسة (قهوة عربية).png';
+        image.style.display = 'block';
+      } else {
+        image.style.display = 'none';
+      }
+    }
+
+    function addProduct() {
+      const type = document.getElementById('type').value;
+      const quantity = document.getElementById('quantity').value;
+      const item = `${quantity} × ${type}`;
+
+      orders.push(item);
+      displayOrders();
+    }
+
+    function displayOrders() {
+      const list = document.getElementById('orderList');
+      list.innerHTML = '';
+      orders.forEach(order => {
+        const li = document.createElement('li');
+        li.textContent = order;
+        list.appendChild(li);
+      });
+    }
+
+    function sendOrder() {
+      if (orders.length === 0) {
+        alert("يرجى إضافة منتج واحد على الأقل قبل الطلب.");
+        return;
+      }
+      const message = `مرحباً، أود طلب المنتجات التالية:\n- ${orders.join('\n- ')}`;
+      const phoneNumber = '0565631103';
+      const whatsappUrl = `https://wa.me/966${phoneNumber.slice(1)}?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+    }
+
+    // تحديث الواجهة عند التحميل الأول
+    window.onload = updateUI;
+  </script>
+</body>
+</html>
